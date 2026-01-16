@@ -1,0 +1,40 @@
+name: Generate Mihomo Rulesets
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Download Mihomo
+        run: |
+          TAG=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r .tag_name)
+          URL="https://github.com/MetaCubeX/mihomo/releases/download/${TAG}/mihomo-linux-amd64-${TAG}.gz"
+          curl -L -o mihomo.gz "$URL"
+          gunzip mihomo.gz
+          mv mihomo-linux-amd64-* mihomo
+          chmod +x mihomo
+
+      - name: Run Converter
+        run: |
+          mkdir -p Continents
+          python convert.py
+
+      - name: Commit and Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-update MRS: $(date +'%Y-%m-%d %H:%M')"
+          file_pattern: "Continents/**" # 提交 Continents 文件夹下的所有内容
