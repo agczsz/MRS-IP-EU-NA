@@ -1,6 +1,6 @@
 # MRS-IP-EU-NA
 
-基于 **MRS（Meta Routing Set）格式** 的 **IPCIDR GeoIP 数据集**，按**洲 / 地区**拆分，适用于 Mihomo / Clash Meta / sing-box 等支持 MRS 的规则系统。
+基于 **MRS（Meta Routing Set）格式** 的 **IPCIDR GeoIP 数据集**，按**洲 / 地区**拆分，适用于 Mi sing 等支持 MRS 的规则系统。
 
 本项目的目标是：  
 - 避免传统 GeoIP 国家数据库不准确的问题  
