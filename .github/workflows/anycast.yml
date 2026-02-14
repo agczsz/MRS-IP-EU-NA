@@ -1,0 +1,42 @@
+name: Generate Anycast Ruleset
+on:
+  schedule:
+    - cron: '30 2 * * *' # 比主任务晚 30 分钟，避免冲突
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Download Mihomo
+        run: |
+          TAG=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r .tag_name)
+          URL="https://github.com/MetaCubeX/mihomo/releases/download/${TAG}/mihomo-linux-amd64-${TAG}.gz"
+          curl -L -o mihomo.gz "$URL"
+          gunzip -f mihomo.gz
+          chmod +x mihomo
+
+      - name: Run Anycast Converter
+        run: |
+          mkdir -p anycast
+          python convert_anycast.py
+
+      - name: Commit and Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-update Anycast MRS: $(date +'%Y-%m-%d %H:%M')"
+          file_pattern: "anycast/**"
