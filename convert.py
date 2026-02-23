@@ -4,8 +4,8 @@ import subprocess
 import os
 
 # --- 配置 ---
-REPO_API_URL = "https://api.github.com/repos/Hamster-Prime/Bird_Global_List/contents/Country_CIDR"
-RAW_BASE_URL = "https://github.com/Hamster-Prime/Bird_Global_List/raw/main/Country_CIDR/"
+REPO_API_URL = "https://api.github.com/repos/agczsz/Bird_Global_List/contents/Country_CIDR"
+RAW_BASE_URL = "https://github.com/agczsz/Bird_Global_List/tree/main/Country_CIDR/"
 MIHOMO_PATH = "./mihomo"
 BASE_DIR = "Continents"
 
