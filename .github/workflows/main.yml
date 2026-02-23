@@ -1,7 +1,8 @@
 name: Generate Mihomo Rulesets
+
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 2 * * *' # 每天凌晨 2 点执行
   workflow_dispatch:
 
 permissions:
@@ -20,7 +21,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests pandas
 
       - name: Download Mihomo
         run: |
@@ -29,19 +30,17 @@ jobs:
           # 构造下载链接
           URL="https://github.com/MetaCubeX/mihomo/releases/download/${TAG}/mihomo-linux-amd64-${TAG}.gz"
           
-          # 下载并直接保存为固定的文件名 mihomo.gz
+          echo "Downloading Mihomo $TAG..."
           curl -L -o mihomo.gz "$URL"
           
-          # 解压。gunzip 默认会删除原文件并生成去掉 .gz 的文件
+          # 解压并重命名
           gunzip -f mihomo.gz
-          
-          # 此时文件名一定是 mihomo，给予执行权限
           chmod +x mihomo
-          
-          # 验证是否成功
           ./mihomo -v
 
       - name: Run Converter
+        env:
+          IPINFO_TOKEN: ${{ secrets.IPINFO_TOKEN }}
         run: |
           mkdir -p Continents
           python convert.py
